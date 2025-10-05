@@ -1,0 +1,25 @@
+name: Gemini AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: AI Code Review
+        uses: ./
+        with:
+          review_title: 'Gemini Review'
+          model_provider: 'gemini'
+          model_name: 'gemini-2.0-flash-lite'
+          api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

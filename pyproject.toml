@@ -1,0 +1,36 @@
+[project]
+name = "any-llm-code-review"
+version = "0.1.0"
+description = "Model-agnostic AI code reviewer for GitHub using pydantic-ai"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic-ai[huggingface]>=0.0.14",
+    "pydantic>=2.0.0",
+    "PyGithub>=2.1.1",
+    "click>=8.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+any-llm-code-review = "any-llm-code-review.main:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["any-llm-code-review"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

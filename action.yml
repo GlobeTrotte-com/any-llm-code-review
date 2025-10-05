@@ -1,0 +1,89 @@
+name: 'Any LLM Code Review'
+description: 'Model-agnostic LLM code reviewer using pydantic-ai - supports OpenAI, Anthropic, Gemini, Groq, Mistral, and more'
+author: 'GlobeTrotte'
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+inputs:
+  model_provider:
+    description: 'Model provider (openai, anthropic, gemini, groq, mistral, cohere, ollama)'
+    required: true
+  model_name:
+    description: 'Model name (e.g., gpt-4, claude-3-5-sonnet-20241022, gemini-1.5-pro)'
+    required: true
+  api_key:
+    description: 'API key for the model provider'
+    required: false
+  base_url:
+    description: 'Optional base URL for API (useful for Ollama or custom endpoints)'
+    required: false
+  github_token:
+    description: 'GitHub token for API access'
+    required: true
+    default: ${{ github.token }}
+  max_tokens:
+    description: 'Maximum tokens for response'
+    required: false
+    default: '4000'
+  temperature:
+    description: 'Temperature for model responses (0.0-1.0)'
+    required: false
+    default: '0.3'
+  ignore_patterns:
+    description: 'Comma-separated file patterns to ignore (e.g., *.md,*.txt)'
+    required: false
+    default: '*.md,*.txt,*.json,*.yaml,*.yml,package-lock.json,yarn.lock,poetry.lock'
+  max_file_size:
+    description: 'Maximum file size in characters to review'
+    required: false
+    default: '10000'
+  custom_prompt:
+    description: 'Custom system prompt for the code reviewer (overrides default)'
+    required: false
+  review_title:
+    description: 'Title for the review comment (e.g., "Claude Security Review")'
+    required: false
+    default: 'AI Code Review'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
+      shell: bash
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        cd ${{ github.action_path }}
+        uv venv
+        source .venv/bin/activate
+        uv pip install -r requirements.txt
+
+    - name: Run code review
+      shell: bash
+      env:
+        MODEL_PROVIDER: ${{ inputs.model_provider }}
+        MODEL_NAME: ${{ inputs.model_name }}
+        API_KEY: ${{ inputs.api_key }}
+        BASE_URL: ${{ inputs.base_url }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        MAX_TOKENS: ${{ inputs.max_tokens }}
+        TEMPERATURE: ${{ inputs.temperature }}
+        IGNORE_PATTERNS: ${{ inputs.ignore_patterns }}
+        MAX_FILE_SIZE: ${{ inputs.max_file_size }}
+        CUSTOM_PROMPT: ${{ inputs.custom_prompt }}
+        REVIEW_TITLE: ${{ inputs.review_title }}
+      run: |
+        cd ${{ github.action_path }}
+        source .venv/bin/activate
+        python -m any-llm-code-review.main review-from-env

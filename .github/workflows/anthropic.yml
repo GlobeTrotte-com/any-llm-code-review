@@ -1,0 +1,25 @@
+name: Anthropic AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: AI Code Review
+        uses: ./
+        with:
+          review_title: 'Claude Review'
+          model_provider: 'anthropic'
+          model_name: 'claude-3-5-haiku-latest'
+          api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

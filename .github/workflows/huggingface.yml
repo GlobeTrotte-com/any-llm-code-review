@@ -1,0 +1,25 @@
+name: Hugging Face (Qwen) AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: AI Code Review
+        uses: ./
+        with:
+          review_title: 'Qwen Review'
+          model_provider: 'huggingface'
+          model_name: 'Qwen/Qwen3-32B'
+          api_key: ${{ secrets.HF_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

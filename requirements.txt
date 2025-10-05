@@ -1,0 +1,4 @@
+pydantic-ai[huggingface]>=0.0.14
+pydantic>=2.0.0
+PyGithub>=2.1.1
+click>=8.1.0
