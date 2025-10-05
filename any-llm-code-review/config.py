@@ -84,7 +84,7 @@ class ReviewConfig(BaseModel):
             max_tokens=int(os.getenv("MAX_TOKENS", "4000")),
             temperature=float(os.getenv("TEMPERATURE", "0.3")),
             github_token=os.getenv("GITHUB_TOKEN", ""),
-            ignore_patterns=os.getenv("IGNORE_PATTERNS", "").split(",") if os.getenv("IGNORE_PATTERNS") else [
+            ignore_patterns=os.getenv("IGNORE_PATTERNS").split(",") if os.getenv("IGNORE_PATTERNS") else [
                 "*.md",
                 "*.txt",
                 "*.json",
