@@ -72,6 +72,10 @@ class ReviewConfig(BaseModel):
         default="AI Code Review",
         description="Title for the code review comment"
     )
+    always_pass: bool = Field(
+        default=False,
+        description="Always pass (exit code 0) regardless of review outcome"
+    )
 
     @classmethod
     def from_env(cls) -> "ReviewConfig":
@@ -97,4 +101,5 @@ class ReviewConfig(BaseModel):
             max_file_size=int(os.getenv("MAX_FILE_SIZE", "10000")),
             custom_prompt=os.getenv("CUSTOM_PROMPT"),
             review_title=os.getenv("REVIEW_TITLE", "AI Code Review"),
+            always_pass=os.getenv("ALWAYS_PASS", "false").lower() == "true",
         )

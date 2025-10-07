@@ -101,6 +101,9 @@ The action will automatically review your code and post comments!
 | `temperature` | Model temperature (0.0-1.0) | No | 0.3 |
 | `ignore_patterns` | Comma-separated file patterns to ignore | No | `*.md,*.txt,*.json,*.yaml,*.yml,package-lock.json,yarn.lock,poetry.lock` |
 | `max_file_size` | Maximum file size in characters | No | 10000 |
+| `custom_prompt` | Custom system prompt for code reviewer | No | - |
+| `review_title` | Title for the review comment | No | AI Code Review |
+| `always_pass` | Always pass (exit 0) regardless of review outcome | No | false |
 
 *Not required for Ollama (self-hosted)
 
@@ -182,6 +185,20 @@ Popular Hugging Face models (with tool calling support):
 - This includes popular models like `Qwen2.5-Coder-7B` or `Llama-3.1-8B`
 - Use **larger 70B+ models** on HuggingFace, OR
 - Use **Gemini 2.0 Flash** (fast, free, works great with small parameter count)
+
+### Always Pass Mode
+
+Prevent the action from failing when changes are requested (useful for informational reviews):
+
+```yaml
+- uses: GlobeTrotte-com/any-llm-code-review@v1
+  with:
+    model_provider: 'openai'
+    model_name: 'gpt-4'
+    api_key: ${{ secrets.OPENAI_API_KEY }}
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    always_pass: 'true'  # Action will never fail
+```
 
 ### Custom Configuration
 

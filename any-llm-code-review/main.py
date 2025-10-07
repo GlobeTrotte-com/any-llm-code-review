@@ -26,6 +26,7 @@ def cli():
 @click.option("--temperature", default=0.3, help="Model temperature")
 @click.option("--custom-prompt", help="Custom system prompt for review")
 @click.option("--review-title", default="AI Code Review", help="Title for the review comment")
+@click.option("--always-pass", is_flag=True, help="Always pass (exit 0) regardless of review outcome")
 def review(
     provider: str,
     model: str,
@@ -38,6 +39,7 @@ def review(
     temperature: float,
     custom_prompt: str,
     review_title: str,
+    always_pass: bool,
 ):
     """Review a pull request."""
     asyncio.run(
@@ -53,6 +55,7 @@ def review(
             temperature,
             custom_prompt,
             review_title,
+            always_pass,
         )
     )
 
@@ -75,6 +78,7 @@ async def review_pr(
     temperature: float = 0.3,
     custom_prompt: str = None,
     review_title: str = "AI Code Review",
+    always_pass: bool = False,
 ):
     """Core review logic."""
     try:
@@ -132,7 +136,7 @@ async def review_pr(
                 if count > 0:
                     print(f"  {severity}: {count}")
 
-        sys.exit(0 if review_result.approved else 1)
+        sys.exit(0 if (review_result.approved or always_pass) else 1)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -172,7 +176,7 @@ async def review_pr_from_env():
         print(f"\nTotal comments: {len(review_result.comments)}")
         print(f"Approved: {review_result.approved}")
 
-        sys.exit(0 if review_result.approved else 1)
+        sys.exit(0 if (review_result.approved or config.always_pass) else 1)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
