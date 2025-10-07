@@ -46,6 +46,10 @@ inputs:
     description: 'Title for the review comment (e.g., "Claude Security Review")'
     required: false
     default: 'AI Code Review'
+  always_pass:
+    description: 'Always pass the action regardless of review outcome (default: false)'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -83,6 +87,7 @@ runs:
         MAX_FILE_SIZE: ${{ inputs.max_file_size }}
         CUSTOM_PROMPT: ${{ inputs.custom_prompt }}
         REVIEW_TITLE: ${{ inputs.review_title }}
+        ALWAYS_PASS: ${{ inputs.always_pass }}
       run: |
         cd ${{ github.action_path }}
         source .venv/bin/activate
