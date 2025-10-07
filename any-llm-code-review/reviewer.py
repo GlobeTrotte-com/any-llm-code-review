@@ -120,10 +120,8 @@ class CodeReviewer:
                 os.environ["OLLAMA_BASE_URL"] = self.config.base_url
 
         if provider == "gemini":
-            # Gemini infers from model name automatically
-            return model_name
+            return f"google-gla:{model_name}"
         elif provider == "huggingface":
-            # Hugging Face uses huggingface: prefix
             return f"huggingface:{model_name}"
         elif provider == "ollama":
             return f"ollama:{model_name}"
@@ -136,7 +134,6 @@ class CodeReviewer:
         elif provider == "mistral":
             return f"mistral:{model_name}"
         else:
-            # Generic fallback - try with prefix
             return f"{provider}:{model_name}"
 
     def should_ignore_file(self, file_path: str) -> bool:
